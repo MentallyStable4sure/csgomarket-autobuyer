@@ -1,15 +1,12 @@
-using AutoBuyer.Items;
 using System.Net;
+using AutoBuyer.Items;
+using AutoBuyer.Requests;
+using AutoBuyer.Data;
 
 namespace AutoBuyer
 {
     public partial class AutoBuyerMainForm : Form
     {
-        public const string baseUrl = "https://market.csgo.com/api/v2/buy?key=";
-        public const string nameUrl = "&hash_name=";
-        public const string priceUrl = "&price=";
-
-
         private System.Uri uri;
         private HttpClient client;
         private Point mousePointer;
@@ -42,7 +39,10 @@ namespace AutoBuyer
             UpdateLink(link);
         }
 
-        private void UpdateLink(LinkLabel link) => link.Text = $"{baseUrl}{linkItem.Key}{nameUrl}{linkItem.Name}{priceUrl}{linkItem.Price}";
+        private void UpdateLink(LinkLabel link)
+        {
+            link.Text = $"{Database.baseUrl}{linkItem.Key}{Database.nameUrl}{linkItem.Name}{Database.priceUrl}{linkItem.Price}";
+        }
 
         private void button_start_Click(object sender, EventArgs e)
         {

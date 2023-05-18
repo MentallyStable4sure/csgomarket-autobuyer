@@ -49,6 +49,7 @@
             pictureBox1 = new PictureBox();
             pictureBox2 = new PictureBox();
             close_box = new PictureBox();
+            comboBox1 = new ComboBox();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)close_box).BeginInit();
@@ -190,10 +191,10 @@
             status_label.BackColor = Color.FromArgb(63, 33, 56);
             status_label.Font = new Font("Cascadia Mono SemiBold", 12F, FontStyle.Bold, GraphicsUnit.Point);
             status_label.ForeColor = Color.Khaki;
-            status_label.Location = new Point(1, 1);
-            status_label.Margin = new Padding(4, 0, 4, 0);
+            status_label.Location = new Point(1, 0);
+            status_label.Margin = new Padding(0);
             status_label.Name = "status_label";
-            status_label.Size = new Size(1376, 29);
+            status_label.Size = new Size(1376, 36);
             status_label.TabIndex = 0;
             status_label.Text = "Status Feedback";
             status_label.TextAlign = ContentAlignment.TopCenter;
@@ -282,17 +283,30 @@
             close_box.TabStop = false;
             close_box.Click += close_box_Click;
             // 
+            // comboBox1
+            // 
+            comboBox1.AutoCompleteMode = AutoCompleteMode.Suggest;
+            comboBox1.AutoCompleteSource = AutoCompleteSource.ListItems;
+            comboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBox1.FlatStyle = FlatStyle.Flat;
+            comboBox1.Items.AddRange(new object[] { "Buy an item", "Place an order", "Get balance" });
+            comboBox1.Location = new Point(12, 73);
+            comboBox1.Name = "comboBox1";
+            comboBox1.Size = new Size(151, 34);
+            comboBox1.TabIndex = 17;
+            // 
             // AutoBuyerMainForm
             // 
             AccessibleName = "Market AutoBuyer";
             AccessibleRole = AccessibleRole.Application;
             AllowDrop = true;
             AutoScaleMode = AutoScaleMode.None;
-            BackColor = Color.Tan;
-            BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
+            BackColor = Color.White;
+            BackgroundImage = Properties.Resources.background;
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1376, 784);
             ControlBox = false;
+            Controls.Add(comboBox1);
             Controls.Add(close_box);
             Controls.Add(progressBar);
             Controls.Add(status_label);
@@ -313,6 +327,7 @@
             Font = new Font("Trebuchet MS", 12F, FontStyle.Regular, GraphicsUnit.Point);
             ForeColor = Color.Black;
             FormBorderStyle = FormBorderStyle.None;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Margin = new Padding(4);
             Name = "AutoBuyerMainForm";
             StartPosition = FormStartPosition.CenterScreen;
@@ -345,5 +360,6 @@
         private PictureBox pictureBox1;
         private PictureBox pictureBox2;
         private PictureBox close_box;
+        private ComboBox comboBox1;
     }
 }
