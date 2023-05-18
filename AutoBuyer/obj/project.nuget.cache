@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "OvwM441uMNGkMwz0goM2PQuFdwf8BxM32txye/gNy+JGNqRQw4UjxaH7UR7U261Lq2tTJTCJCYApXPqXqBl3xA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\DELL\\Documents\\GitHub\\AutoBuyer\\AutoBuyer\\AutoBuyer.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\DELL\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
