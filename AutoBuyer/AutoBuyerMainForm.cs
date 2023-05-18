@@ -1,7 +1,6 @@
-using System.Net;
-using AutoBuyer.Items;
-using AutoBuyer.Requests;
 using AutoBuyer.Data;
+using AutoBuyer.Requests;
+using AutoBuyer.Utility;
 
 namespace AutoBuyer
 {
@@ -9,88 +8,61 @@ namespace AutoBuyer
     {
         private System.Uri uri;
         private HttpClient client;
-        private Point mousePointer;
 
-        private LinkItem linkItem;
+        private Database database;
+        private RequestsHandler requestsHandler;
+
+        private Drag drag;
 
         public bool IsBuying { get; private set; }
 
         public AutoBuyerMainForm()
         {
-            linkItem = new LinkItem(string.Empty, string.Empty, string.Empty);
             InitializeComponent();
-        }
+            database = new Database();
+            requestsHandler = new RequestsHandler();
 
-        private void name_input_TextChanged(object sender, EventArgs e)
-        {
-            linkItem.Name = name_input.Text;
-            UpdateLink(link);
-        }
+            requestsHandler.FeedbackHandler.OnFeedbackUpdated += UpdateStatus;
 
-        private void key_input_TextChanged(object sender, EventArgs e)
-        {
-            linkItem.Key = key_input.Text;
-            UpdateLink(link);
-        }
-
-        private void price_input_TextChanged(object sender, EventArgs e)
-        {
-            linkItem.Price = price_input.Text;
-            UpdateLink(link);
-        }
-
-        private void UpdateLink(LinkLabel link)
-        {
-            link.Text = $"{Database.baseUrl}{linkItem.Key}{Database.nameUrl}{linkItem.Name}{Database.priceUrl}{linkItem.Price}";
-        }
-
-        private void button_start_Click(object sender, EventArgs e)
-        {
-            IsBuying = true;
-
-            StartLoop();
+            drag = new Drag();
         }
 
         private void StartLoop()
         {
-            uri = new System.Uri(link.Text);
-            client = new HttpClient();
+            uri = RequestsHandler.UpdateLinkAccordingToRequest(database.Link);
+            link_text.Text = uri.ToString(); //debug link
 
+            client = new HttpClient();
             delay_timer.Start();
         }
 
-        private async Task SendResponse()
-        {
-            var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Get, uri));
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                var result = response.Content.ReadAsStringAsync();
-                UpdateLoadingBar(result);
-
-                var resultContent = await result;
-                var responseResult = Newtonsoft.Json.JsonConvert.DeserializeObject<MarketResponse>(resultContent);
-
-                if (responseResult == null) return;
-                status_label.Text = responseResult.Status ? "Item bought successfully!" : "Item not bought";
-            }
-            else
-            {
-                status_label.Text = "Error occurred while buying an item";
-            }
-        }
-
-        private void UpdateLoadingBar(Task<string> result)
+        private void UpdateLoadingBar()
         {
             ResetTimer();
             loading_timer.Start();
         }
+
+        private void UpdateStatus(string feedback) => status_label.Text = feedback;
 
         private void ResetTimer()
         {
             progressBar.Value = 0;
             loading_timer.Stop();
         }
+
+
+        private void name_input_TextChanged(object sender, EventArgs e) => database.Link.Name = name_input.Text;
+
+        private void key_input_TextChanged(object sender, EventArgs e) => database.Link.Key = key_input.Text;
+
+        private void price_input_TextChanged(object sender, EventArgs e) => database.Link.Price = price_input.Text;
+
+        private void button_start_Click(object sender, EventArgs e)
+        {
+            IsBuying = true;
+            StartLoop();
+        }
+
 
         private void loading_timer_Tick(object sender, EventArgs e)
         {
@@ -103,17 +75,15 @@ namespace AutoBuyer
             if (!IsBuying)
             {
                 delay_timer.Stop();
+                link_text.Text = string.Empty;
                 client.Dispose();
                 return;
             }
 
-            SendResponse().ConfigureAwait(false);
+            requestsHandler.SendMarketRequest(client, uri, UpdateLoadingBar).ConfigureAwait(false);
         }
 
-        private void time_text_TextChanged(object sender, EventArgs e)
-        {
-            delay_timer.Interval = int.Parse(time_text.Text);
-        }
+        private void time_text_TextChanged(object sender, EventArgs e) => delay_timer.Interval = int.Parse(time_text.Text);
 
         private void stop_button_Click(object sender, EventArgs e)
         {
@@ -121,18 +91,22 @@ namespace AutoBuyer
             ResetTimer();
         }
 
-        private void close_box_Click(object sender, EventArgs e) => Application.Exit();
+        private void close_box_Click(object sender, EventArgs e)
+        {
+            requestsHandler.FeedbackHandler.OnFeedbackUpdated -= UpdateStatus;
 
-        private void status_label_MouseDown(object sender, MouseEventArgs e) => mousePointer = new Point(-e.X, -e.Y);
+            Application.Exit();
+        }
+
+        private void status_label_MouseDown(object sender, MouseEventArgs e) => drag.SetStartPoint(-e.X, -e.Y);
 
         private void status_label_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.Button != MouseButtons.Left) return;
 
-            var mousePosition = MousePosition;
-            mousePosition.Offset(mousePointer.X, mousePointer.Y);
-
-            Location = mousePosition;
+            Location = drag.MouseDrag(MousePosition);
         }
+
+        private void dropdown_menu_ItemChanged(object sender, EventArgs e) => database.Link.RequestType = (RequestType)dropdown_menu.SelectedIndex;
     }
 }
