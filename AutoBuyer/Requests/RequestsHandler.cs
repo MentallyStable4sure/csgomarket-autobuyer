@@ -56,7 +56,12 @@ namespace AutoBuyer.Requests
 
         public static Uri UpdateLinkAccordingToRequest(LinkItem linkItem)
         {
-            string link = $"{Database.BaseUrl}{linkItem.GetRequestTypeAsApi()}{Database.KeyUrl}{linkItem.Key}{Database.NameUrl}{linkItem.Name}{Database.PriceUrl}{linkItem.Price}";
+            string itemRelatedAction = $"{Database.NameUrl}{linkItem.Name}{Database.PriceUrl}{linkItem.Price}";
+
+            //if we wanna check our balance we dont need item name or item price variables
+            if (linkItem.RequestType == RequestType.Balance) itemRelatedAction = string.Empty;
+
+            string link = $"{Database.BaseUrl}{linkItem.GetRequestTypeAsApi()}{Database.KeyUrl}{linkItem.Key}{itemRelatedAction}";
             return new Uri(link);
         }
     }
