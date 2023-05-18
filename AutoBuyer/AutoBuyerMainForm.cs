@@ -36,8 +36,14 @@ namespace AutoBuyer
             delay_timer.Start();
         }
 
-        private void UpdateLoadingBar()
+        private void UpdateLoadingBar(MarketResponse response)
         {
+            var feedbackHandler = requestsHandler.FeedbackHandler;
+
+            if (response == null) feedbackHandler.UpdateFeedback(RequestsHandler.DeserializationError);
+            else feedbackHandler.UpdateFeedback(response.Status ? FeedbackHandler.MessageBought : FeedbackHandler.MessageNotBought);
+
+
             ResetTimer();
             loading_timer.Start();
         }

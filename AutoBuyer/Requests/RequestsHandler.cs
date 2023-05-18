@@ -9,6 +9,9 @@ namespace AutoBuyer.Requests
         public const string UnexpectedError = "Unexpected error occurred while accessing URL, check site availability.";
         public const string DeserializationError = "Couldnt de-sereialize JSON response or site isnt responding";
 
+        public const string ConnectedMessage = "Sending request...";
+        public const string ParsingMessage = "Parsing JSON response...";
+
         public FeedbackHandler FeedbackHandler { get; protected set; }
 
         public RequestsHandler(FeedbackHandler customFeedbackHandler = null)
@@ -25,6 +28,8 @@ namespace AutoBuyer.Requests
         /// <returns>json response as plain text, in case of error returns a string.Empty</returns>
         public async Task<string> SendRequest(HttpClient client, Uri uri)
         {
+            FeedbackHandler.UpdateFeedback(ConnectedMessage);
+
             var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Get, uri));
 
             if (response.StatusCode != HttpStatusCode.OK)
@@ -33,10 +38,11 @@ namespace AutoBuyer.Requests
                 return string.Empty;
             }
 
+            FeedbackHandler.UpdateFeedback(ParsingMessage);
             return await response.Content.ReadAsStringAsync();
         }
 
-        public async Task<MarketResponse> SendMarketRequest(HttpClient client, Uri uri, Action onComplete = null)
+        public async Task<MarketResponse> SendMarketRequest(HttpClient client, Uri uri, Action<MarketResponse> onComplete = null)
         {
             var result = await SendRequest(client, uri);
 
@@ -44,7 +50,7 @@ namespace AutoBuyer.Requests
 
             if (responseResult == null) FeedbackHandler.UpdateFeedback(DeserializationError);
 
-            onComplete?.Invoke();
+            onComplete?.Invoke(responseResult);
             return responseResult;
         }
 
