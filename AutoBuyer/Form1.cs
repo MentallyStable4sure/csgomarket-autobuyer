@@ -1,5 +1,4 @@
 using AutoBuyer.Items;
-using System;
 using System.Net;
 
 namespace AutoBuyer
@@ -13,6 +12,7 @@ namespace AutoBuyer
 
         private System.Uri uri;
         private HttpClient client;
+        private Point mousePointer;
 
         private LinkItem linkItem;
 
@@ -122,5 +122,17 @@ namespace AutoBuyer
         }
 
         private void close_box_Click(object sender, EventArgs e) => Application.Exit();
+
+        private void status_label_MouseDown(object sender, MouseEventArgs e) => mousePointer = new Point(-e.X, -e.Y);
+
+        private void status_label_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left) return;
+
+            var mousePosition = MousePosition;
+            mousePosition.Offset(mousePointer.X, mousePointer.Y);
+
+            Location = mousePosition;
+        }
     }
 }

@@ -197,6 +197,8 @@
             status_label.TabIndex = 0;
             status_label.Text = "Status Feedback";
             status_label.TextAlign = ContentAlignment.TopCenter;
+            status_label.MouseDown += status_label_MouseDown;
+            status_label.MouseMove += status_label_MouseMove;
             // 
             // stop_button
             // 
