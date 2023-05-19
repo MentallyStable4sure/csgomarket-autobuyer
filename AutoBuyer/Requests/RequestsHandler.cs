@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using AutoBuyer.Data;
+using AutoBuyer.Data.Model;
 using AutoBuyer.Items;
 
 namespace AutoBuyer.Requests
@@ -42,16 +43,15 @@ namespace AutoBuyer.Requests
             return await response.Content.ReadAsStringAsync();
         }
 
-        public async Task<MarketResponse> SendMarketRequest(HttpClient client, Uri uri, Action<MarketResponse> onComplete = null)
+        public async Task SendMarketRequest<T>(HttpClient client, Uri uri, Action<T> onComplete = null)
         {
             var result = await SendRequest(client, uri);
 
-            var responseResult = Newtonsoft.Json.JsonConvert.DeserializeObject<MarketResponse>(result);
+            var responseResult = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(result);
 
             if (responseResult == null) FeedbackHandler.UpdateFeedback(DeserializationError);
 
             onComplete?.Invoke(responseResult);
-            return responseResult;
         }
 
         public static Uri UpdateLinkAccordingToRequest(LinkItem linkItem)
@@ -63,6 +63,24 @@ namespace AutoBuyer.Requests
 
             string link = $"{Database.BaseUrl}{linkItem.GetRequestTypeAsApi()}{Database.KeyUrl}{linkItem.Key}{itemRelatedAction}";
             return new Uri(link);
+        }
+
+        public static Type GetResponseType(LinkItem linkItem)
+        {
+            switch (linkItem.RequestType)
+            {
+                case RequestType.Balance:
+                    return typeof(DataModelBalance);
+
+                case RequestType.Buy:
+                    return typeof(DataModelBuy);
+
+                case RequestType.Order:
+                    return typeof(DataModelOrder);
+
+                default:
+                    return typeof(MarketResponse);
+            }
         }
     }
 }

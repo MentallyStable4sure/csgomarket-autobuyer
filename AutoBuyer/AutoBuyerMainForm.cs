@@ -1,4 +1,5 @@
 using AutoBuyer.Data;
+using AutoBuyer.Data.Model;
 using AutoBuyer.Requests;
 using AutoBuyer.Utility;
 
@@ -36,13 +37,12 @@ namespace AutoBuyer
             delay_timer.Start();
         }
 
-        private void UpdateLoadingBar(MarketResponse response)
+        private void UpdateLoadingBar(DataModelBuy response)
         {
             var feedbackHandler = requestsHandler.FeedbackHandler;
 
             if (response == null) feedbackHandler.UpdateFeedback(RequestsHandler.DeserializationError);
-            else feedbackHandler.UpdateFeedback(response.Status ? FeedbackHandler.MessageBought : FeedbackHandler.MessageNotBought);
-
+            else feedbackHandler.UpdateFeedback(response.OperationState ? FeedbackHandler.MessageBought : FeedbackHandler.MessageNotBought);
 
             ResetTimer();
             loading_timer.Start();
@@ -86,7 +86,10 @@ namespace AutoBuyer
                 return;
             }
 
-            requestsHandler.SendMarketRequest(client, uri, UpdateLoadingBar).ConfigureAwait(false);
+            //TODO: according to request type pass different generic type T (bruh i h8 those different models of responses stuff)
+            //var type = RequestsHandler.GetResponseType(database.Link);
+
+            requestsHandler.SendMarketRequest<DataModelBuy>(client, uri, UpdateLoadingBar).ConfigureAwait(false);
         }
 
         private void time_text_TextChanged(object sender, EventArgs e) => delay_timer.Interval = int.Parse(time_text.Text);

@@ -1,7 +1,8 @@
 ﻿
 namespace AutoBuyer.Requests
 {
-    internal class MarketResponse
+    [Serializable]
+    public class MarketResponse
     {
         public bool Status { get; set; }
         public string Response { get; set; }
