@@ -135,6 +135,10 @@
             "version": "[8.0.0-preview.3.23177.8, 8.0.0-preview.3.23177.8]"
           },
           {
+            "name": "Microsoft.NETCore.App.Crossgen2.win-x64",
+            "version": "[8.0.0-preview.3.23174.8, 8.0.0-preview.3.23174.8]"
+          },
+          {
             "name": "Microsoft.NETCore.App.Runtime.win-x86",
             "version": "[8.0.0-preview.3.23174.8, 8.0.0-preview.3.23174.8]"
           },
