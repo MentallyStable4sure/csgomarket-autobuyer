@@ -34,8 +34,6 @@
             key_input = new TextBox();
             name_input = new TextBox();
             price_input = new TextBox();
-            link = new LinkLabel();
-            outcome_label = new Label();
             name_text = new Label();
             key_label = new Label();
             price_label = new Label();
@@ -49,6 +47,9 @@
             pictureBox1 = new PictureBox();
             pictureBox2 = new PictureBox();
             close_box = new PictureBox();
+            dropdown_menu = new ComboBox();
+            link_text = new LinkLabel();
+            outcome_api_text = new Label();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)close_box).BeginInit();
@@ -112,32 +113,6 @@
             price_input.Enter += price_input_TextChanged;
             price_input.Leave += price_input_TextChanged;
             // 
-            // link
-            // 
-            link.BackColor = Color.Transparent;
-            link.Font = new Font("Yu Gothic", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
-            link.ForeColor = Color.Black;
-            link.LinkColor = Color.Black;
-            link.Location = new Point(1, 682);
-            link.Margin = new Padding(4, 0, 4, 0);
-            link.Name = "link";
-            link.Size = new Size(932, 93);
-            link.TabIndex = 4;
-            link.TabStop = true;
-            link.Text = "https://market.csgo.com/api/v2/buy?key={KEY}&hash_name={NAME}&price={PRICE}";
-            link.VisitedLinkColor = Color.Gray;
-            // 
-            // outcome_label
-            // 
-            outcome_label.BackColor = Color.Transparent;
-            outcome_label.Font = new Font("Bahnschrift SemiBold", 22.8000011F, FontStyle.Bold, GraphicsUnit.Point);
-            outcome_label.Location = new Point(1, 632);
-            outcome_label.Margin = new Padding(4, 0, 4, 0);
-            outcome_label.Name = "outcome_label";
-            outcome_label.Size = new Size(333, 50);
-            outcome_label.TabIndex = 5;
-            outcome_label.Text = "Outcome API link:";
-            // 
             // name_text
             // 
             name_text.AutoSize = true;
@@ -190,13 +165,15 @@
             status_label.BackColor = Color.FromArgb(63, 33, 56);
             status_label.Font = new Font("Cascadia Mono SemiBold", 12F, FontStyle.Bold, GraphicsUnit.Point);
             status_label.ForeColor = Color.Khaki;
-            status_label.Location = new Point(1, 1);
-            status_label.Margin = new Padding(4, 0, 4, 0);
+            status_label.Location = new Point(1, 0);
+            status_label.Margin = new Padding(0);
             status_label.Name = "status_label";
-            status_label.Size = new Size(1376, 29);
+            status_label.Size = new Size(1376, 36);
             status_label.TabIndex = 0;
             status_label.Text = "Status Feedback";
             status_label.TextAlign = ContentAlignment.TopCenter;
+            status_label.MouseDown += status_label_MouseDown;
+            status_label.MouseMove += status_label_MouseMove;
             // 
             // stop_button
             // 
@@ -280,22 +257,60 @@
             close_box.TabStop = false;
             close_box.Click += close_box_Click;
             // 
+            // dropdown_menu
+            // 
+            dropdown_menu.AutoCompleteMode = AutoCompleteMode.Suggest;
+            dropdown_menu.AutoCompleteSource = AutoCompleteSource.ListItems;
+            dropdown_menu.DropDownStyle = ComboBoxStyle.DropDownList;
+            dropdown_menu.FlatStyle = FlatStyle.Flat;
+            dropdown_menu.Items.AddRange(new object[] { "None", "Buy an item", "Place an order", "Get balance" });
+            dropdown_menu.Location = new Point(12, 73);
+            dropdown_menu.Name = "dropdown_menu";
+            dropdown_menu.Size = new Size(151, 34);
+            dropdown_menu.TabIndex = 17;
+            dropdown_menu.SelectedValueChanged += dropdown_menu_ItemChanged;
+            // 
+            // link_text
+            // 
+            link_text.BackColor = Color.Transparent;
+            link_text.DisabledLinkColor = Color.Goldenrod;
+            link_text.Font = new Font("Yu Gothic UI", 7.8F, FontStyle.Bold, GraphicsUnit.Point);
+            link_text.ForeColor = Color.NavajoWhite;
+            link_text.LinkColor = Color.Black;
+            link_text.Location = new Point(158, 763);
+            link_text.Name = "link_text";
+            link_text.Size = new Size(790, 20);
+            link_text.TabIndex = 18;
+            link_text.VisitedLinkColor = Color.Peru;
+            // 
+            // outcome_api_text
+            // 
+            outcome_api_text.AutoSize = true;
+            outcome_api_text.BackColor = Color.Transparent;
+            outcome_api_text.Font = new Font("Bahnschrift", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            outcome_api_text.Location = new Point(0, 763);
+            outcome_api_text.Name = "outcome_api_text";
+            outcome_api_text.Size = new Size(152, 18);
+            outcome_api_text.TabIndex = 19;
+            outcome_api_text.Text = "Outcome API request:";
+            // 
             // AutoBuyerMainForm
             // 
             AccessibleName = "Market AutoBuyer";
             AccessibleRole = AccessibleRole.Application;
             AllowDrop = true;
             AutoScaleMode = AutoScaleMode.None;
-            BackColor = Color.Tan;
-            BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
+            BackColor = Color.White;
+            BackgroundImage = Properties.Resources.background;
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1376, 784);
             ControlBox = false;
+            Controls.Add(outcome_api_text);
+            Controls.Add(link_text);
+            Controls.Add(dropdown_menu);
             Controls.Add(close_box);
             Controls.Add(progressBar);
             Controls.Add(status_label);
-            Controls.Add(outcome_label);
-            Controls.Add(link);
             Controls.Add(time_text);
             Controls.Add(time_label);
             Controls.Add(button_start);
@@ -311,6 +326,7 @@
             Font = new Font("Trebuchet MS", 12F, FontStyle.Regular, GraphicsUnit.Point);
             ForeColor = Color.Black;
             FormBorderStyle = FormBorderStyle.None;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Margin = new Padding(4);
             Name = "AutoBuyerMainForm";
             StartPosition = FormStartPosition.CenterScreen;
@@ -328,20 +344,21 @@
         private TextBox key_input;
         private TextBox name_input;
         private TextBox price_input;
-        private LinkLabel link;
-        private Label outcome_label;
         private Label name_text;
         private Label key_label;
         private Label price_label;
-        private ProgressBar progressBar;
-        private Label status_label;
+        protected ProgressBar progressBar;
+        protected Label status_label;
         private Button stop_button;
-        private System.Windows.Forms.Timer loading_timer;
+        protected System.Windows.Forms.Timer loading_timer;
         private System.Windows.Forms.Timer delay_timer;
         private TextBox time_text;
         private Label time_label;
         private PictureBox pictureBox1;
         private PictureBox pictureBox2;
         private PictureBox close_box;
+        private ComboBox dropdown_menu;
+        private LinkLabel link_text;
+        private Label outcome_api_text;
     }
 }

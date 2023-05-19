@@ -63,9 +63,9 @@ namespace AutoBuyer.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap ______cropped_2048_1152_1243395 {
+        internal static System.Drawing.Bitmap _back_light {
             get {
-                object obj = ResourceManager.GetObject("______cropped-2048-1152-1243395", resourceCulture);
+                object obj = ResourceManager.GetObject("_back_light", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -73,9 +73,9 @@ namespace AutoBuyer.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap _back_light {
+        internal static System.Drawing.Bitmap background {
             get {
-                object obj = ResourceManager.GetObject("_back_light", resourceCulture);
+                object obj = ResourceManager.GetObject("background", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

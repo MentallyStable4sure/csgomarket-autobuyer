@@ -4,7 +4,7 @@
     <_LastSelectedProfileId>C:\Users\DELL\Documents\GitHub\AutoBuyer\AutoBuyer\Properties\PublishProfiles\ClickOnceProfile.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Update="Form1.cs">
+    <Compile Update="AutoBuyerMainForm.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>
